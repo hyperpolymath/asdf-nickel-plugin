@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: AGPL-3.0-or-later
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/../lib/utils.bash"
+check_dependencies
+
+[[ -z "${ASDF_INSTALL_VERSION:-}" ]] && fail "ASDF_INSTALL_VERSION required"
+[[ -z "${ASDF_DOWNLOAD_PATH:-}" ]] && fail "ASDF_DOWNLOAD_PATH required"
+
+mkdir -p "${ASDF_DOWNLOAD_PATH}"
+
+log_info "Downloading nickel ${ASDF_INSTALL_VERSION}..."
+download_file "$(get_download_url "${ASDF_INSTALL_VERSION}")" "${ASDF_DOWNLOAD_PATH}/nickel"
+
+log_info "Downloading nls (Nickel Language Server) ${ASDF_INSTALL_VERSION}..."
+download_file "$(get_nls_download_url "${ASDF_INSTALL_VERSION}")" "${ASDF_DOWNLOAD_PATH}/nls"
+
+chmod +x "${ASDF_DOWNLOAD_PATH}/nickel" "${ASDF_DOWNLOAD_PATH}/nls"
+log_info "Download complete"
